@@ -1,0 +1,72 @@
+# GitHub 설정 절차 — 감지 → 적용 → 재확인 → 보고
+
+원칙: **모든 명령은 실패할 수 있다.** 실패는 폴백으로 보내고, 성공은 3단계 재확인을 통과한 것만 보고한다.
+규칙별 수단·강등 경로의 근거는 `enforcement-matrix.md`.
+
+## 1. 감지
+
+```bash
+gh auth status                                   # 실패 → 폴백 C
+git remote get-url origin                        # 없음 → 폴백 C (+ gh repo create 제안)
+gh repo view --json nameWithOwner,visibility,viewerPermission
+```
+
+- `viewerPermission`이 `ADMIN`이 아니면 설정 변경 불가 → 폴백 C (관리자에게 전달할 체크리스트).
+- 기본 브랜치명은 가정하지 말 것: `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`
+
+## 2. 적용
+
+### 2a. 머지 방식 — 모든 플랜에서 가능
+
+```bash
+gh api -X PATCH repos/{owner}/{repo} \
+  -F allow_squash_merge=true -F allow_merge_commit=false -F allow_rebase_merge=false \
+  -F squash_merge_commit_title=PR_TITLE -F squash_merge_commit_message=PR_BODY \
+  -F delete_branch_on_merge=true
+```
+
+- `squash_merge_commit_title=PR_TITLE`이 핵심 — "PR 제목 = main 커밋 메시지"를 이 필드가 보장한다.
+- `delete_branch_on_merge` — 머지된 브랜치 자동 삭제 (죽은 브랜치 누적 방지).
+
+### 2b. 브랜치 보호 — public 또는 유료 플랜만
+
+```bash
+gh api -X PUT repos/{owner}/{repo}/branches/{default}/protection --input - <<'JSON'
+{
+  "required_pull_request_reviews": { "required_approving_review_count": N },
+  "required_status_checks": null,
+  "enforce_admins": false,
+  "restrictions": null,
+  "allow_force_pushes": false
+}
+JSON
+```
+
+- `N` = 정규 1 / 해커톤·1인 0. **해커톤도 보호는 건다** — 직push 차단은 유지하고 승인만 0 (PR 흐름 강제 + 셀프 머지 허용).
+- HTTP 403에 "Upgrade to GitHub Pro" 류 메시지 → private+무료 → **폴백 B**. 에러로 죽지 말 것.
+
+## 3. 재확인 — 통과한 것만 "적용됨"
+
+```bash
+gh api repos/{owner}/{repo} \
+  --jq '{squash:.allow_squash_merge, merge:.allow_merge_commit, rebase:.allow_rebase_merge, title:.squash_merge_commit_title}'
+gh api repos/{owner}/{repo}/branches/{default}/protection --jq '.required_pull_request_reviews.required_approving_review_count' 2>&1
+```
+
+- 두 번째 명령이 404/403이면 브랜치 보호는 **없는 것이다** — 2b가 성공한 듯 보였어도.
+
+## 4. 폴백
+
+| | 조건 | 하는 일 |
+|---|---|---|
+| A | 2a+2b 재확인 통과 | 풀 세팅 보고 |
+| B | private+무료 (2b 403) | 2a만 하드. `agents-section.md`의 `{{PROTECTION_NOTE}}`를 소프트 문구로 치환. 강등을 보고에 명시 (무엇·왜·복구법: public 전환 또는 Pro 후 스킬 재실행) |
+| C | gh 미인증·원격 없음·ADMIN 아님 | 사람용 체크리스트 출력: Settings→General→Pull Requests에서 squash만 허용 + 기본 제목 "PR title" + auto-delete 켜기, Settings→Branches에서 보호 규칙 추가 (가능한 플랜일 때) |
+
+## 5. 보고 형식
+
+```
+✅ 하드 적용 (재확인 완료): squash-only + PR제목=커밋제목, 브랜치 보호(승인 N)
+⚠️ 소프트 강등: <규칙> — <이유>. 복구: <방법>
+👤 사람이 할 일: <체크리스트>
+```
