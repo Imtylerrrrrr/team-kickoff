@@ -1,8 +1,13 @@
 # team-kickoff
 
-**에이전트 팀을 위한 협업 거버넌스 세팅 스킬** — 커밋·PR·브랜치 규칙, 에이전트 컨텍스트 파일, GitHub 강제 설정까지 4문항 인터뷰 하나로.
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/LICENSE-MIT-97CA00?style=for-the-badge&labelColor=3C3C3C" alt="License: MIT"></a>&nbsp;
+  <a href="https://claude.com/claude-code"><img src="https://img.shields.io/badge/SKILL-CLAUDE_CODE-D97757?style=for-the-badge&labelColor=3C3C3C" alt="Claude Code skill"></a>&nbsp;
+  <a href="docs/red-baseline.md"><img src="https://img.shields.io/badge/BUILT_WITH-DOC_TDD-8B5CF6?style=for-the-badge&labelColor=3C3C3C" alt="문서 TDD로 제작"></a>&nbsp;
+  <a href="README.md"><img src="https://img.shields.io/badge/LANG-ENGLISH-2B7DE9?style=for-the-badge&labelColor=3C3C3C" alt="English (primary)"></a>
+</p>
 
-[English (primary) →](README.md)
+**에이전트 팀을 위한 협업 거버넌스 세팅 스킬** — 커밋·PR·브랜치 규칙, 에이전트 컨텍스트 파일, GitHub 강제 설정까지 4문항 인터뷰 하나로.
 
 ## 왜
 
