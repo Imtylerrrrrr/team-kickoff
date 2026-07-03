@@ -1,6 +1,6 @@
 ---
 name: team-kickoff
-description: Use when starting or joining a team project or competition repository and collaboration rules need to be set up — commit/PR/branch conventions, agent context files, GitHub merge settings. Triggers: new hackathon/competition repo, "collaboration rules", "commit convention", "PR rules", "set up team repo", team develops with coding agents (Claude Code, Codex, Cursor, Gemini CLI).
+description: Use when starting or joining a team project or competition repository and collaboration rules need to be set up — commit/PR/branch conventions, agent context files, GitHub merge settings. Triggers — new hackathon/competition repo, "collaboration rules", "commit convention", "PR rules", "set up team repo", team develops with coding agents (Claude Code, Codex, Cursor, Gemini CLI).
 ---
 
 # Team Kickoff
@@ -39,7 +39,7 @@ The interview and all generated artifacts follow the user's language.
 | CI PR-title check | none | suggest in report as "For humans (optional)" |
 | Commit-level format hooks | none | only if ④ automated releases was chosen |
 
-Common to all modes: squash-only merge, PR title `type: description`, exactly 5 types `feat|fix|docs|refactor|chore`, personal-branch commits are free (WIP welcome). If team size is 1, set approvals to 0. Regulation levels (L1/L2) and type adjudication: `references/commit-conventions.md`.
+Common to all modes: squash-only merge, PR title `type: description`, exactly 5 types `feat|fix|docs|refactor|chore`, personal-branch commits are unrestricted (WIP welcome). If team size is 1, set approvals to 0. Regulation levels (L1/L2) and type adjudication: `references/commit-conventions.md`.
 
 ### 4. GitHub settings — run **before** generating artifacts
 
@@ -48,7 +48,7 @@ Why the order matters: the `{{PROTECTION_NOTE}}` substitution in step 5 depends 
 Follow `references/github-setup.md`: detect → apply → **re-verify via `gh api`** → fall back. Rule-by-enforcement mapping: `references/enforcement-matrix.md`. Three-tier fallback:
 
 1. Public repo or paid plan → full setup: squash-only + branch protection
-2. Private + free plan (protection API returns 403) → squash-only applied hard; "no direct pushes" is downgraded to a soft rule in AGENTS.md
+2. Private + free plan (protection API returns 403) → squash-only applied hard; "no direct pushes" and the approval requirement are downgraded to soft rules in AGENTS.md
 3. gh missing / unauthenticated / no remote / not ADMIN → print a checklist for humans
 
 ### 5. Generate artifacts — use `templates/` (placeholder definitions in `templates/README.md`)
@@ -57,10 +57,10 @@ Follow `references/github-setup.md`: detect → apply → **re-verify via `gh ap
 |---|---|
 | `AGENTS.md` | `<!-- team-rules:start/end -->` marker section, **30-line cap**. If new, generate the skeleton: title (the project name, from README or the directory name) + rules block + two empty sections `## Project overview` / `## Build & run`. If the file exists, insert right below the title; if markers already exist, **replace only what's between them** |
 | `CLAUDE.md` / `GEMINI.md` | One-line pointers. **Always create both — don't ask about the team's tools** (a one-liner costs ~0 and keeps working when teammates switch tools). If the file exists, append only the pointer line at the end. **No symlinks** (they break on Windows checkouts) |
-| `.github/PULL_REQUEST_TEMPLATE.md` | Centered on a verification checklist. If a template exists, append only the checklist section |
+| `.github/PULL_REQUEST_TEMPLATE.md` | Centered on a verification checklist, wrapped in the same markers. If markers exist, **replace only what's between them**; if an unmarked template exists, append only the (marker-wrapped) checklist section |
 | `README.md` | Append the short "Collaboration rules" section (3 content lines + markers — idempotent) |
 
-**Never overwrite existing files. No changes beyond the request (no branch creation/renaming, no history rewriting)** — use the detected `{{DEFAULT_BRANCH}}` as is.
+**Never overwrite existing files. No changes beyond the request — no renaming/replacing the default branch, no history rewriting** (the working branch for a setup PR in landing path 2 is expected, not a violation) — use the detected `{{DEFAULT_BRANCH}}` as is.
 
 **Where the artifacts land** — rules take effect the moment they are merged into the default branch. Decision order:
 1. **No remote** (regardless of team) → commit directly to the default branch — a PR is impossible. If artifacts from a previous run are sitting uncommitted, commit them together to bring the rules into force. This explicit rule overrides the general habit of avoiding direct commits to the default branch — the rules are not in force until this commit exists
@@ -77,7 +77,7 @@ Three sections: **✅ Applied hard** (GitHub settings re-verified + local files 
 |---|---|
 | Duplicate rules into a second file (CONTRIBUTING.md, .cursor/rules, …) | The commit-type list was copied into 5 files — change one and 5 drift |
 | Write a separate human-facing rules document | A 110-line CONTRIBUTING.md, where 3 README lines suffice |
-| Install commit-msg / pre-push hooks by default | Rejected WIP commits + taught the team a bypass variable on the very first push + silently inactive in non-Node repos |
+| Install commit-msg / pre-push hooks by default | Rejected WIP commits + taught the team a bypass variable (`ALLOW_MAIN_PUSH=1`) on the very first push + silently inactive in non-Node repos |
 | Apply maximal setup regardless of mode | Hackathon teams start bypassing rules at 3 a.m. when merges get blocked |
 | Generate without markers | Duplicates and conflicts on re-runs and in existing repos |
 | Report "done" without re-verifying | On private+free, branch protection fails silently |

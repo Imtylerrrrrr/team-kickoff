@@ -5,7 +5,7 @@
 - Branch names: `feat/short-description` `fix/short-description` (types match PR types)
 - PR title: `type: description` ({{LANG}}, ~50 chars) — types are `feat|fix|docs|refactor|chore` only
   - PRs are squash-merged, so the PR title becomes the commit message on {{DEFAULT_BRANCH}}
-- Commit messages and counts on personal branches are free (WIP commits welcome)
+- Commit messages and commit frequency on personal branches are unrestricted (WIP commits welcome)
 - Review & merge: {{REVIEW_RULE}}
 - Check items in the PR verification checklist only if you actually did them
 - No unrequested refactoring, no unrequested dependencies, no force pushes (history rewriting)

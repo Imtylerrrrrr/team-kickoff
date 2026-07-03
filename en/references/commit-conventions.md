@@ -7,8 +7,8 @@ Use this to pick the regulation level from interview answers, and to answer "why
 | Level | What is regulated | When |
 |---|---|---|
 | L0 free-form | nothing (advisory wording only) | solo + indifferent to history — **out of scope for this skill** (the skill applies L1 and up) |
-| **L1 PR-only (default)** | PR titles only: `type: description` + squash-only. Commits are free | most team/competition projects |
-| L2 full Conventional Commits | every commit's format + hooks | only when interview ④ says automated releases (semver/changelog) are planned |
+| **L1 PR-only (default)** | PR titles only: `type: description` + squash-only. Commits are unrestricted | most team/competition projects |
+| L2 full Conventional Commits | every commit's format + hooks | regular mode + interview ④ says automated releases (semver/changelog) are planned — hackathon mode never installs hooks |
 
 Why L1 is the default:
 - With squash-only, main history = the sequence of PR titles. Personal-branch commits never reach main
@@ -41,7 +41,7 @@ Why not the full 11-type set (style, perf, test, build, ci, …): the cost of cl
 ## Writing PR titles
 
 - `type: description` — one space after the colon, ~50 chars total
-- Imperative/noun form: "add login screen" (O) / "added the login screen" (X)
+- Imperative/noun form: ✅ "add login screen" · ❌ "added the login screen"
 - No scopes — `feat(auth):` is banned. At this team size it adds deliberation without benefit
 
 ## Language choice (interview ③)

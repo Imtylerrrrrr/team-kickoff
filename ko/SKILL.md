@@ -1,6 +1,6 @@
 ---
 name: team-kickoff
-description: Use when starting or joining a team project or competition repository and collaboration rules need to be set up — commit/PR/branch conventions, agent context files, GitHub merge settings. Triggers: new hackathon/공모전/대회 repo, "협업 규칙", "커밋 규칙 세팅", "PR 규칙", "팀 레포 준비", team develops with coding agents (Claude Code, Codex, Cursor, Gemini CLI).
+description: Use when starting or joining a team project or competition repository and collaboration rules need to be set up — commit/PR/branch conventions, agent context files, GitHub merge settings. Triggers — new hackathon/공모전/대회 repo, "협업 규칙", "커밋 규칙 세팅", "PR 규칙", "팀 레포 준비", team develops with coding agents (Claude Code, Codex, Cursor, Gemini CLI).
 ---
 
 # Team Kickoff
@@ -48,7 +48,7 @@ description: Use when starting or joining a team project or competition reposito
 절차는 `references/github-setup.md`대로: 감지 → 적용 → **`gh api`로 실제 적용 재확인** → 폴백. 규칙별 수단·강등 경로는 `references/enforcement-matrix.md`. 폴백 3단:
 
 1. public 또는 유료 플랜 → squash-only + 브랜치 보호 풀 세팅
-2. private + 무료 (보호 API 403) → squash-only만 하드 적용. "직push 금지"는 AGENTS.md 소프트 규칙으로 강등
+2. private + 무료 (보호 API 403) → squash-only만 하드 적용. "직push 금지"와 승인 요건은 AGENTS.md 소프트 규칙으로 강등
 3. gh 미설치/미인증/원격 없음/ADMIN 아님 → 사람이 할 일을 체크리스트로 출력
 
 ### 5. 산출물 생성 — `templates/` 사용 (치환자 정의는 `templates/README.md`)
@@ -57,12 +57,12 @@ description: Use when starting or joining a team project or competition reposito
 |---|---|
 | `AGENTS.md` | `<!-- team-rules:start/end -->` 마커 섹션, **30줄 상한**. 신규면 골격으로 생성: 제목(프로젝트명 — README나 디렉토리명에서) + 규칙 블록 + 빈 `## 프로젝트 개요`·`## 빌드·실행` 섹션 2개. 기존 파일이면 제목 바로 아래 삽입, 마커가 이미 있으면 **사이만 교체** |
 | `CLAUDE.md` / `GEMINI.md` | 한 줄 포인터. **팀 구성을 묻지 말고 둘 다 항상 생성** — 한 줄 비용 ≈ 0, 팀원이 도구를 바꿔도 동작한다. 기존 파일이면 파일 끝에 포인터 라인만 추가. **심링크 금지** (Windows 체크아웃에서 깨짐) |
-| `.github/PULL_REQUEST_TEMPLATE.md` | 검증 체크리스트 중심. 기존 템플릿이 있으면 체크리스트 섹션만 append |
+| `.github/PULL_REQUEST_TEMPLATE.md` | 검증 체크리스트 중심 — 체크리스트를 동일 마커로 감싼다. 마커가 있으면 **사이만 교체**, 마커 없는 기존 템플릿이면 (마커 포함) 체크리스트 섹션만 append |
 | `README.md` | 짧은 "협업 규칙" 섹션 append (내용 3줄 + 마커 — 멱등) |
 
-**기존 파일 덮어쓰기 금지. 요청 밖 변경(브랜치 생성·이름 변경, 히스토리 재작성 등) 금지** — 브랜치명은 감지된 `{{DEFAULT_BRANCH}}`를 그대로 쓴다.
+**기존 파일 덮어쓰기 금지. 요청 밖 변경 금지 — 기본 브랜치 이름 변경·교체, 히스토리 재작성 금지** (착지 경로 2의 세팅 PR용 작업 브랜치 생성은 위반이 아니다) — 브랜치명은 감지된 `{{DEFAULT_BRANCH}}`를 그대로 쓴다.
 
-**산출물의 착지 경로** — 규칙은 main에 머지된 순간부터 발효된다. 판정 순서:
+**산출물의 착지 경로** — 규칙은 기본 브랜치에 머지된 순간부터 발효된다. 판정 순서:
 1. **원격이 없으면** (팀 유무 무관) → 기본 브랜치에 직커밋 — PR 자체가 불가능하다. 이전 실행의 미커밋 산출물이 남아 있으면 함께 커밋해 발효시킨다. 이 명시 규칙은 "기본 브랜치 직커밋 회피"라는 일반 습관을 오버라이드한다 — 이 커밋이 있어야 규칙이 발효된다
 2. 원격이 있고 팀이 이미 작업 중 → 브랜치 + PR로 올리되, **머지는 사람에게 넘긴다** (에이전트 셀프 머지 금지 — 보고의 "사람이 할 일"에 PR 링크). 이 규칙이 없으면 "승인 1명"이 세팅 PR 자체를 데드락에 빠뜨린다
 3. 원격이 있고 아직 혼자 → 직커밋·직push 허용 (규칙 발효 전이므로 모순 아님)

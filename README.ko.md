@@ -48,7 +48,7 @@ cp -r team-kickoff/en ~/.claude/skills/team-kickoff    # 영어 버전
 
 ## 어떻게 만들어졌나
 
-문서에 대한 TDD로 만들어졌습니다: 먼저 스킬 *없이* 베이스라인 에이전트에게 같은 과제를 시켜 실패를 기록하고(커밋 타입 목록을 5개 파일에 복제, WIP 커밋을 거부하는 훅 설치, 첫날부터 우회 변수 학습 — `docs/red-baseline.md`), 그 실패를 겨냥해 스킬을 작성한 뒤, 실제 private GitHub 레포 대상 실전 실행(진짜 403 폴백, 진짜 PR 착지, 진짜 멱등 재실행)을 포함한 페르소나 리허설 5회로 검증했습니다. 설계 기록은 `docs/`에.
+문서에 대한 TDD([skill-writing discipline](https://github.com/obra/superpowers))로 만들어졌습니다: 먼저 스킬 *없이* 베이스라인 에이전트에게 같은 과제를 시켜 실패를 기록하고(커밋 타입 목록을 5개 파일에 복제, WIP 커밋을 거부하는 훅 설치, 첫날부터 우회 변수 학습 — `docs/red-baseline.md`), 그 실패를 겨냥해 스킬을 작성한 뒤, 실제 private GitHub 레포 대상 실전 실행(진짜 403 폴백, 진짜 PR 착지, 진짜 멱등 재실행)을 포함한 페르소나 리허설 5회로 검증했습니다. 설계 기록은 `docs/`에.
 
 ## 라이선스
 

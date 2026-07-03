@@ -12,7 +12,7 @@ gh repo view --json nameWithOwner,visibility,viewerPermission
 ```
 
 - If `viewerPermission` is not `ADMIN`, settings can't be changed → fallback C (a checklist to hand the admin).
-- Never assume the default branch name: `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`
+- Never assume the default branch name: `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` (no usable remote → `git branch --show-current`)
 
 ## 2. Apply
 
@@ -33,7 +33,8 @@ gh api -X PATCH repos/{owner}/{repo} \
 ### 2b. Branch protection — public repos or paid plans only
 
 ```bash
-gh api -X PUT repos/{owner}/{repo}/branches/{default}/protection --input - <<'JSON'
+DEFAULT=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
+gh api -X PUT "repos/{owner}/{repo}/branches/$DEFAULT/protection" --input - <<'JSON'
 {
   "required_pull_request_reviews": { "required_approving_review_count": N },
   "required_status_checks": null,
@@ -46,13 +47,14 @@ JSON
 
 - `N` = 1 for regular / 0 for hackathon & solo. **Hackathon mode still applies protection** — direct pushes stay blocked; only approvals go to 0 (PR flow enforced + self-merge allowed).
 - HTTP 403 with an "Upgrade to GitHub Pro" style message → private+free → **fallback B**. Do not die on this error.
+- gh api auto-fills only `{owner}`/`{repo}`/`{branch}` — interpolate the default branch yourself (`$DEFAULT` above); a literal `{default}` is sent to the API as-is and returns 404.
 
 ## 3. Re-verify — only what passes here is "applied"
 
 ```bash
 gh api repos/{owner}/{repo} \
-  --jq '{squash:.allow_squash_merge, merge:.allow_merge_commit, rebase:.allow_rebase_merge, title:.squash_merge_commit_title}'
-gh api repos/{owner}/{repo}/branches/{default}/protection --jq '.required_pull_request_reviews.required_approving_review_count' 2>&1
+  --jq '{squash:.allow_squash_merge, merge:.allow_merge_commit, rebase:.allow_rebase_merge, title:.squash_merge_commit_title, msg:.squash_merge_commit_message, autodel:.delete_branch_on_merge}'
+gh api "repos/{owner}/{repo}/branches/$DEFAULT/protection" --jq '.required_pull_request_reviews.required_approving_review_count' 2>&1
 ```
 
 - If the second command returns 404/403, branch protection **does not exist** — even if 2b appeared to succeed.
@@ -63,8 +65,8 @@ gh api repos/{owner}/{repo}/branches/{default}/protection --jq '.required_pull_r
 | | Condition | Action |
 |---|---|---|
 | A | 2a+2b re-verified | report full setup |
-| B | private + free (2b → 403) | 2a hard only. Substitute the soft wording into `{{PROTECTION_NOTE}}` in `agents-section.md`. State the downgrade in the report (what · why · recovery: go public or Pro, then re-run this skill) |
-| C | gh unauthenticated · no remote · not ADMIN | Surface the human checklist **once, in the final report's 👤 section** (not mid-run): Settings→General→Pull Requests: allow squash only + default title "PR title" + auto-delete on; Settings→Branches: add a protection rule (when the plan allows). With no remote, the merge settings (2a) are unappliable too — list them under ⚠️ with recovery "create the remote, then re-run this skill". Substitute the same soft wording as B into `{{PROTECTION_NOTE}}`, and state the actual reason ("no remote" / "no permission") in ⚠️ |
+| B | private + free (2b → 403) | 2a hard only. Substitute the soft wording into `{{PROTECTION_NOTE}}` in `agents-section.md`; in regular mode append the same soft note to `{{REVIEW_RULE}}` (approvals aren't enforced either). State the downgrade in the report (what · why · recovery: go public or Pro, then re-run this skill) |
+| C | gh missing/unauthenticated · no remote · not ADMIN | Surface the human checklist **once, in the final report's 👤 section** (not mid-run): Settings→General→Pull Requests: allow squash only + default title "PR title" + auto-delete on; Settings→Branches: add a protection rule (when the plan allows). With no remote, the merge settings (2a) cannot be applied either — list them under ⚠️ with recovery "create the remote, then re-run this skill". Substitute the same soft wording as B into `{{PROTECTION_NOTE}}`, and state the actual reason ("no remote" / "no permission") in ⚠️ |
 
 ## 5. Report format
 
