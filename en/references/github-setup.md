@@ -64,7 +64,7 @@ gh api repos/{owner}/{repo}/branches/{default}/protection --jq '.required_pull_r
 |---|---|---|
 | A | 2a+2b re-verified | report full setup |
 | B | private + free (2b → 403) | 2a hard only. Substitute the soft wording into `{{PROTECTION_NOTE}}` in `agents-section.md`. State the downgrade in the report (what · why · recovery: go public or Pro, then re-run this skill) |
-| C | gh unauthenticated · no remote · not ADMIN | print the human checklist: Settings→General→Pull Requests: allow squash only + default title "PR title" + auto-delete on; Settings→Branches: add a protection rule (when the plan allows). Substitute the same soft wording as B into `{{PROTECTION_NOTE}}`, and state the actual reason ("no remote" / "no permission") in the ⚠️ report section |
+| C | gh unauthenticated · no remote · not ADMIN | Surface the human checklist **once, in the final report's 👤 section** (not mid-run): Settings→General→Pull Requests: allow squash only + default title "PR title" + auto-delete on; Settings→Branches: add a protection rule (when the plan allows). With no remote, the merge settings (2a) are unappliable too — list them under ⚠️ with recovery "create the remote, then re-run this skill". Substitute the same soft wording as B into `{{PROTECTION_NOTE}}`, and state the actual reason ("no remote" / "no permission") in ⚠️ |
 
 ## 5. Report format
 

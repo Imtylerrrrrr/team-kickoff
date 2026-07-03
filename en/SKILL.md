@@ -55,15 +55,15 @@ Follow `references/github-setup.md`: detect → apply → **re-verify via `gh ap
 
 | File | Rule |
 |---|---|
-| `AGENTS.md` | `<!-- team-rules:start/end -->` marker section, **30-line cap**. If new, generate the skeleton: title + rules block + two empty sections `## Project overview` / `## Build & run`. If the file exists, insert right below the title; if markers already exist, **replace only what's between them** |
+| `AGENTS.md` | `<!-- team-rules:start/end -->` marker section, **30-line cap**. If new, generate the skeleton: title (the project name, from README or the directory name) + rules block + two empty sections `## Project overview` / `## Build & run`. If the file exists, insert right below the title; if markers already exist, **replace only what's between them** |
 | `CLAUDE.md` / `GEMINI.md` | One-line pointers. **Always create both — don't ask about the team's tools** (a one-liner costs ~0 and keeps working when teammates switch tools). If the file exists, append only the pointer line at the end. **No symlinks** (they break on Windows checkouts) |
 | `.github/PULL_REQUEST_TEMPLATE.md` | Centered on a verification checklist. If a template exists, append only the checklist section |
-| `README.md` | Append a 3-line "Collaboration rules" section (with markers — idempotent) |
+| `README.md` | Append the short "Collaboration rules" section (3 content lines + markers — idempotent) |
 
 **Never overwrite existing files. No changes beyond the request (no branch creation/renaming, no history rewriting)** — use the detected `{{DEFAULT_BRANCH}}` as is.
 
 **Where the artifacts land** — rules take effect the moment they are merged into the default branch. Decision order:
-1. **No remote** (regardless of team) → commit directly to the default branch — a PR is impossible. If artifacts from a previous run are sitting uncommitted, commit them together to bring the rules into force
+1. **No remote** (regardless of team) → commit directly to the default branch — a PR is impossible. If artifacts from a previous run are sitting uncommitted, commit them together to bring the rules into force. This explicit rule overrides the general habit of avoiding direct commits to the default branch — the rules are not in force until this commit exists
 2. Remote exists and the team is already working → put changes on a branch + PR, and **hand the merge to a human** (no agent self-merge — link the PR under "For humans" in the report). Without this rule, "1 approval required" deadlocks the setup PR itself
 3. Remote exists but still solo → direct commit/push is fine (the rules are not in force yet, so no contradiction)
 
