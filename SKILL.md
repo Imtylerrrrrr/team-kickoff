@@ -20,47 +20,53 @@ description: Use when starting or joining a team project or competition reposito
 
 ### 1. 감지 — 묻지 말고 확인한다
 
-- git 레포 여부, 기존 `AGENTS.md`/`CLAUDE.md`/`GEMINI.md`/`.github/PULL_REQUEST_TEMPLATE.md`
+- git 레포 여부, **기본 브랜치명**(가정 금지 — master일 수 있다), 기존 `AGENTS.md`/`CLAUDE.md`/`GEMINI.md`/`.github/PULL_REQUEST_TEMPLATE.md`
 - `gh auth status`, 원격 존재 여부, 레포 가시성(public/private)
 
 ### 2. 인터뷰 — 정확히 4문항, 한 번에
 
 ① 기간·강도: 해커톤(≤3일) / 정규 ② 팀 인원 ③ 커밋·PR 제목 언어(한글/영어) ④ 자동 릴리즈(semver·체인지로그) 계획 여부
 
-**4문항 초과 금지.** 감지(1단계)로 알 수 있는 것을 묻지 않는다.
+**4문항 초과 금지.** 감지(1단계)로 알 수 있는 것을 묻지 않는다. CI 검사 등 선택 제안도 질문하지 말 것 — 보고서의 "사람이 할 일 (선택)"에 넣는다.
 
 ### 3. 모드 결정
 
 | | 해커톤 | 정규 |
 |---|---|---|
 | 리뷰 승인 | 0명 — 셀프 머지 허용 | 1명 |
-| CI PR 제목 검사 | 안 함 | 제안 (선택) |
+| CI PR 제목 검사 | 안 함 | 보고서 "사람이 할 일 (선택)"으로 제안 |
 | 커밋 레벨 형식 검사(훅) | 안 함 | ④ 자동 릴리즈 선택 시에만 |
 
 모든 모드 공통: squash-only 머지, PR 제목 `타입: 설명`, 타입은 `feat|fix|docs|refactor|chore` 5종, 개인 브랜치 커밋 자유(WIP 허용). 인원이 1명이면 승인 0으로 조정. 규제 수준(L1/L2)과 타입 판정 기준은 `references/commit-conventions.md`.
 
-### 4. 산출물 생성 — `templates/` 사용
+### 4. GitHub 설정 — 산출물 생성보다 **먼저** 실행한다
+
+순서가 중요한 이유: 5단계의 `{{PROTECTION_NOTE}}` 치환값은 브랜치 보호의 성패를 알아야 정해진다.
+
+절차는 `references/github-setup.md`대로: 감지 → 적용 → **`gh api`로 실제 적용 재확인** → 폴백. 규칙별 수단·강등 경로는 `references/enforcement-matrix.md`. 폴백 3단:
+
+1. public 또는 유료 플랜 → squash-only + 브랜치 보호 풀 세팅
+2. private + 무료 (보호 API 403) → squash-only만 하드 적용. "직push 금지"는 AGENTS.md 소프트 규칙으로 강등
+3. gh 미설치/미인증/원격 없음/ADMIN 아님 → 사람이 할 일을 체크리스트로 출력
+
+### 5. 산출물 생성 — `templates/` 사용 (치환자 정의는 `templates/README.md`)
 
 | 파일 | 규칙 |
 |---|---|
-| `AGENTS.md` | `<!-- team-rules:start/end -->` 마커 섹션, **30줄 상한**. 신규면 구조 골격(규칙 최상단)으로 생성, 기존 파일이면 제목 바로 아래 삽입, 마커가 이미 있으면 사이만 교체 |
-| `CLAUDE.md` / `GEMINI.md` | 한 줄 포인터. 기존 파일이면 포인터 라인만 추가. **심링크 금지** (Windows 체크아웃에서 깨짐) |
-| `.github/PULL_REQUEST_TEMPLATE.md` | 검증 체크리스트 중심 ("diff 전체를 읽고 설명할 수 있다" 포함) |
-| `README.md` | "협업 규칙" 3줄 섹션 append (하드 규칙 + AGENTS.md 포인터) |
+| `AGENTS.md` | `<!-- team-rules:start/end -->` 마커 섹션, **30줄 상한**. 신규면 골격으로 생성: 제목 + 규칙 블록 + 빈 `## 프로젝트 개요`·`## 빌드·실행` 섹션 2개. 기존 파일이면 제목 바로 아래 삽입, 마커가 이미 있으면 **사이만 교체** |
+| `CLAUDE.md` / `GEMINI.md` | 한 줄 포인터. **팀 구성을 묻지 말고 둘 다 항상 생성** — 한 줄 비용 ≈ 0, 팀원이 도구를 바꿔도 동작한다. 기존 파일이면 파일 끝에 포인터 라인만 추가. **심링크 금지** (Windows 체크아웃에서 깨짐) |
+| `.github/PULL_REQUEST_TEMPLATE.md` | 검증 체크리스트 중심. 기존 템플릿이 있으면 체크리스트 섹션만 append |
+| `README.md` | "협업 규칙" 3줄 섹션 append (마커 포함 — 멱등) |
 
-**기존 파일 덮어쓰기 금지. 요청 밖 변경(브랜치 이름 변경, 히스토리 재작성 등) 금지.**
+**기존 파일 덮어쓰기 금지. 요청 밖 변경(브랜치 생성·이름 변경, 히스토리 재작성 등) 금지** — 브랜치명은 감지된 `{{DEFAULT_BRANCH}}`를 그대로 쓴다.
 
-### 5. GitHub 설정 — `references/github-setup.md`의 절차대로
-
-규칙별 강제 수단과 강등 경로는 `references/enforcement-matrix.md` 기준. 감지 → 적용 → **`gh api`로 실제 적용 재확인** → 보고. 폴백 3단:
-
-1. public 또는 유료 플랜 → squash-only + 브랜치 보호 풀 세팅
-2. private + 무료 → squash-only만 하드 적용. 브랜치 보호는 불가하므로 "main 직push 금지"는 AGENTS.md 소프트 규칙로 강등하고 **이 사실을 보고에 명시**
-3. gh 미설치/미인증/원격 없음 → 사람이 할 일을 체크리스트로 출력
+**산출물의 착지 경로** — 규칙은 main에 머지된 순간부터 발효된다:
+- 원격이 없거나 아직 혼자인 레포 → 기본 브랜치에 직커밋 (규칙 발효 전이므로 모순 아님)
+- 팀이 이미 작업 중인 레포 → 브랜치 + PR로 올리되, **머지는 사람에게 넘긴다** (에이전트 셀프 머지 금지 — 보고의 "사람이 할 일"에 PR 링크). 이 규칙이 없으면 "승인 1명"이 세팅 PR 자체를 데드락에 빠뜨린다
 
 ### 6. 보고
 
-세 칸으로: **하드 적용됨(재확인 완료)** / **소프트로 강등됨(이유 포함)** / **사람이 할 일**.
+세 칸으로: **✅ 하드 적용** (재확인된 GitHub 설정 + 생성 확인된 로컬 파일) / **⚠️ 소프트 강등** (실제 이유 그대로: 플랜·가시성·원격 없음·권한 없음 + 복구법) / **👤 사람이 할 일** (세팅 PR 머지, 팀원 초대, 선택 제안 포함).
 
 ## 철칙 — 베이스라인 테스트에서 실제 발생한 실패들
 
@@ -72,5 +78,6 @@ description: Use when starting or joining a team project or competition reposito
 | 모드 구분 없이 최대 세팅 | 해커톤 팀은 새벽 머지 블락에서 규칙을 우회하기 시작한다 |
 | 마커 없이 생성 | 재실행·기존 레포에서 중복과 충돌 |
 | 재확인 없이 "완료" 보고 | private+무료에서 브랜치 보호는 조용히 실패한다 |
+| 기본 브랜치명을 main으로 가정 | 리허설 레포 2개가 master였다 — 템플릿의 `{{DEFAULT_BRANCH}}`에 감지값을 넣는다 |
 
 규칙 섹션이 30줄을 넘게 됐다면 규칙이 아니라 설계가 잘못된 것이다 — 무거운 것은 PR 템플릿(GitHub이 자동 삽입)·레포 설정·이 스킬의 references로 옮긴다.

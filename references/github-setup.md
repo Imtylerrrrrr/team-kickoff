@@ -54,6 +54,7 @@ gh api repos/{owner}/{repo}/branches/{default}/protection --jq '.required_pull_r
 ```
 
 - 두 번째 명령이 404/403이면 브랜치 보호는 **없는 것이다** — 2b가 성공한 듯 보였어도.
+- 이 조회의 실패(exit code 1)는 오류가 아니라 **강등 판정 신호**다 — 여기서 중단하지 말고 폴백 B/C로 진행한다.
 
 ## 4. 폴백
 
@@ -61,7 +62,7 @@ gh api repos/{owner}/{repo}/branches/{default}/protection --jq '.required_pull_r
 |---|---|---|
 | A | 2a+2b 재확인 통과 | 풀 세팅 보고 |
 | B | private+무료 (2b 403) | 2a만 하드. `agents-section.md`의 `{{PROTECTION_NOTE}}`를 소프트 문구로 치환. 강등을 보고에 명시 (무엇·왜·복구법: public 전환 또는 Pro 후 스킬 재실행) |
-| C | gh 미인증·원격 없음·ADMIN 아님 | 사람용 체크리스트 출력: Settings→General→Pull Requests에서 squash만 허용 + 기본 제목 "PR title" + auto-delete 켜기, Settings→Branches에서 보호 규칙 추가 (가능한 플랜일 때) |
+| C | gh 미인증·원격 없음·ADMIN 아님 | 사람용 체크리스트 출력: Settings→General→Pull Requests에서 squash만 허용 + 기본 제목 "PR title" + auto-delete 켜기, Settings→Branches에서 보호 규칙 추가 (가능한 플랜일 때). `{{PROTECTION_NOTE}}`는 B와 동일한 소프트 문구로 치환하고, 보고 ⚠️ 칸의 이유는 실제 원인("원격 없음"·"권한 없음")을 그대로 적는다 |
 
 ## 5. 보고 형식
 
