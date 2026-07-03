@@ -37,7 +37,7 @@ description: Use when starting or joining a team project or competition reposito
 | CI PR 제목 검사 | 안 함 | 제안 (선택) |
 | 커밋 레벨 형식 검사(훅) | 안 함 | ④ 자동 릴리즈 선택 시에만 |
 
-모든 모드 공통: squash-only 머지, PR 제목 `타입: 설명`, 타입은 `feat|fix|docs|refactor|chore` 5종, 개인 브랜치 커밋 자유(WIP 허용).
+모든 모드 공통: squash-only 머지, PR 제목 `타입: 설명`, 타입은 `feat|fix|docs|refactor|chore` 5종, 개인 브랜치 커밋 자유(WIP 허용). 인원이 1명이면 승인 0으로 조정. 규제 수준(L1/L2)과 타입 판정 기준은 `references/commit-conventions.md`.
 
 ### 4. 산출물 생성 — `templates/` 사용
 
@@ -52,7 +52,7 @@ description: Use when starting or joining a team project or competition reposito
 
 ### 5. GitHub 설정 — `references/github-setup.md`의 절차대로
 
-감지 → 적용 → **`gh api`로 실제 적용 재확인** → 보고. 폴백 3단:
+규칙별 강제 수단과 강등 경로는 `references/enforcement-matrix.md` 기준. 감지 → 적용 → **`gh api`로 실제 적용 재확인** → 보고. 폴백 3단:
 
 1. public 또는 유료 플랜 → squash-only + 브랜치 보호 풀 세팅
 2. private + 무료 → squash-only만 하드 적용. 브랜치 보호는 불가하므로 "main 직push 금지"는 AGENTS.md 소프트 규칙로 강등하고 **이 사실을 보고에 명시**
