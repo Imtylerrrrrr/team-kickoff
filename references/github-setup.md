@@ -16,6 +16,8 @@ gh repo view --json nameWithOwner,visibility,viewerPermission
 
 ## 2. 적용
 
+**쓰기 전에 읽는다**: 먼저 §3의 GET으로 현재 값을 확인하고, 목표와 불일치하는 항목이 있을 때만 PATCH/PUT을 실행한다. 멱등 재실행에서 불필요한 쓰기(및 그에 따른 권한 프롬프트)를 없앤다.
+
 ### 2a. 머지 방식 — 모든 플랜에서 가능
 
 ```bash
