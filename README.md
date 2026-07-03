@@ -2,12 +2,12 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/LICENSE-MIT-97CA00?style=for-the-badge&labelColor=3C3C3C" alt="License: MIT"></a>&nbsp;
-  <a href="https://claude.com/claude-code"><img src="https://img.shields.io/badge/SKILL-CLAUDE_CODE-D97757?style=for-the-badge&labelColor=3C3C3C" alt="Claude Code skill"></a>&nbsp;
-  <a href="docs/red-baseline.md"><img src="https://img.shields.io/badge/BUILT_WITH-DOC_TDD-8B5CF6?style=for-the-badge&labelColor=3C3C3C" alt="Built with doc TDD"></a>&nbsp;
-  <a href="README.ko.md"><img src="https://img.shields.io/badge/LANG-%ED%95%9C%EA%B5%AD%EC%96%B4-CE2B37?style=for-the-badge&labelColor=3C3C3C" alt="한국어 문서"></a>
+  <a href="https://claude.com/claude-code"><img src="https://img.shields.io/badge/SKILL-CLAUDE_CODE-D97757?style=for-the-badge&labelColor=3C3C3C" alt="Claude Code skill"></a>
 </p>
 
 **A Claude Code skill that sets up collaboration governance for agent-based teams** — commit/PR/branch conventions, agent context files, and GitHub-level enforcement — through a single 4-question interview.
+
+[한국어 →](README.ko.md)
 
 ## Why
 
